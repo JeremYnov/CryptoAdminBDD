@@ -1,0 +1,150 @@
+version: '3.3'
+services:
+  spark-master:
+    image: cluster-apache-spark:3.0.2
+    ports:
+      - "9094:8080"
+      - "7077:7077"
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORLOAD=master
+
+  spark-worker-a:
+    image: cluster-apache-spark:3.0.2
+    ports:
+      - "9095:8080"
+      - "7000:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-a
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+
+  spark-worker-b:
+    image: cluster-apache-spark:3.0.2
+    ports:
+      - "9096:8080"
+      - "7001:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-b
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/apps/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=citizix
+      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+  
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CREATE_TOPICS: crypto_raw,crypto_news
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    healthcheck:
+      test: ["CMD", "bash", "-c", "unset", "JMX_PORT", ";", "/bin/kafka-topics.sh", "--zookeeper", "zookeeper:2181", "--list"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    ports:
+      - 29092:29092
+      - 9092:9092
+      - 30001:30001
+
+  ccxt-producer:
+    container_name: ccxt-producer
+    restart: on-failure
+    command: python3 ./ccxt_producer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./numeric_data/producer
+    volumes:
+      - ./numeric_data/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  news-producer:
+    container_name: news-producer
+    restart: on-failure
+    command: python3 ./news_producer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./text_data/producer
+    volumes:
+      - ./text_data/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  ccxt-consumer:
+    container_name: ccxt-consumer
+    restart: on-failure
+    command: python3 ./ccxt_consumer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./numeric_data/consumer
+    depends_on:
+      - mongodb
+      - ccxt-producer
+    volumes:
+      - ./numeric_data/consumer:/usr/src
+      - ./.env:/usr/src/.env
+
+  news-consumer:
+    container_name: news-consumer
+    restart: on-failure
+    command: python3 ./news_consumer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./text_data/consumer
+    depends_on:
+      - mongodb
+      - news-producer
+    volumes:
+      - ./text_data/consumer:/usr/src
+      - ./.env:/usr/src/.env
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000

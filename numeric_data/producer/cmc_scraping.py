@@ -79,10 +79,10 @@ def scrape(date="20211219/"):
 scrape(date="20211219/")
 print(crypto_name_list)
 # Store data into df
-df["Name"] = crypto_name_list
-df["Symbol"] = crypto_symbol_list
-df["Market Cap"] = crypto_market_cap_list
-df["Price"] = crypto_price_list
-df["Cicrulating Supply"] = crypto_circulating_supply_list
+# df["Name"] = crypto_name_list           
+# df["Symbol"] = crypto_symbol_list
+# df["Market Cap"] = crypto_market_cap_list
+# df["Price"] = crypto_price_list
+# df["Cicrulating Supply"] = crypto_circulating_supply_list
 
 print(df)
