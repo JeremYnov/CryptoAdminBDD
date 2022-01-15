@@ -1,5 +1,8 @@
 version: '3.3'
 services:
+  # ======================
+  # Spark
+  # ======================
   spark-master:
     image: cluster-apache-spark:3.0.2
     ports:
@@ -50,6 +53,9 @@ services:
       - ./apps:/opt/spark-apps
       - ./data:/opt/spark-data
 
+  # ======================
+  # Databases
+  # ======================
   mongodb:
     image: mongo:5.0
     ports:
@@ -60,6 +66,17 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=citizix
       - MONGO_INITDB_ROOT_PASSWORD=S3cret
 
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server"]
+
+# ======================
+# Hadoop
+  # ======================
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: namenode
@@ -114,6 +131,10 @@ services:
     env_file:
       - ./hadoop.env
 
+
+  # ======================
+  # Kafka
+  # ======================
   kafka:
     image: confluentinc/cp-kafka
     container_name: kafka
@@ -139,6 +160,16 @@ services:
       - 9092:9092
       - 30001:30001
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # ======================
+  # Scripts
+  # ======================
   ccxt-producer:
     container_name: ccxt-producer
     restart: on-failure
@@ -195,14 +226,8 @@ services:
       - ./text_data/consumer:/usr/src
       - ./.env:/usr/src/.env
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
 volumes:
+  redis_data:
   hadoop_namenode:
   hadoop_datanode:
   hadoop_historyserver:
