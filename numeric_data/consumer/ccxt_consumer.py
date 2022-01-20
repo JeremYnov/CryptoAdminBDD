@@ -8,7 +8,7 @@ load_dotenv()
 
 # connexion à la bdd
 mongo_url = "mongodb://{username}:{password}@mongodb:27017".format(
-    username=os.getenv("MONGO_ROOT_USERNAME"), password=os.getenv("MONGO_ROOT_PASSWORD")
+    username=os.getenv("MONGO_USERNAME"), password=os.getenv("MONGO_PASSWORD")
 )
 client = MongoClient(mongo_url)
 
