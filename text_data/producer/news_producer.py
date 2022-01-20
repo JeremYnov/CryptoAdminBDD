@@ -12,7 +12,7 @@ producer = KafkaProducer(
     value_serializer=lambda x: dumps(x).encode('utf-8')
 )
 
-url = "{url}?auth_token={token}".format(url=os.getenv('CRYPTO_PANIC_API_URL'),
+url = "{url}/?auth_token={token}".format(url=os.getenv('CRYPTO_PANIC_API_URL'),
                                         token=os.getenv('CRYPTO_PANIC_API_KEY'))
 
 while True :
@@ -21,6 +21,7 @@ while True :
         data = page.json()
         news = data['results']
         producer.send('crypto_news', news)
-    except:
-        print('error')
+    except Exception as e:
+        print('Error')
+        print(e)
     sleep(1)
