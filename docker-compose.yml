@@ -82,7 +82,7 @@ services:
 
 # ======================
 # Hadoop
-  # ======================
+# ======================
   # namenode:
   #   image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
   #   container_name: namenode
@@ -157,10 +157,10 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
     healthcheck:
-      test: ["CMD", "bash", "-c", "unset", "JMX_PORT", ";", "/bin/kafka-topics.sh", "--zookeeper", "zookeeper:2181", "--list"]
+      test: ["CMD", "bash", "-c", "unset", "JMX_PORT", ";", "/bin/kafka-topics.sh", "--bootstrap-server", "localhost:29092", "--list"]
       interval: 20s
       timeout: 10s
-      retries: 3
+      retries: 4
     ports:
       - 29092:29092
       - 9092:9092
