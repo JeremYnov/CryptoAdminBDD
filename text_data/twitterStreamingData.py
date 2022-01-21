@@ -1,5 +1,5 @@
 import tweepy
-import pandas as pd 
+import pandas as pd
 
 # Store the data
 log = pd.read_csv("./Login.csv")
