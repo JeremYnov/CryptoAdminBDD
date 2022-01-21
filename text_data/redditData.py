@@ -3,6 +3,7 @@ SECRET_TOKEN = "7HFRAddxFtsfw4Rx_vt8lz0A4katxQ"
 
 import requests
 import pandas as pd
+import time
 
 # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
 auth = requests.auth.HTTPBasicAuth(CLIENT_ID, SECRET_TOKEN)
@@ -40,11 +41,10 @@ for post in res.json()["data"]["children"]:
             "subreddit": post["data"]["subreddit"],
             "title": post["data"]["title"],
             "selftext": post["data"]["selftext"],
-            "upvote_ratio": post["data"]["upvote_ratio"],
-            "ups": post["data"]["ups"],
-            "downs": post["data"]["downs"],
-            "score": post["data"]["score"],
+            # "upvote_ratio": post["data"]["upvote_ratio"],
+            # "ups": post["data"]["ups"],
+            # "downs": post["data"]["downs"],
+            # "score": post["data"]["score"],
         },
         ignore_index=True,
     )
-    print(df)
