@@ -23,6 +23,9 @@ while True:
         page = requests.get(url)
         data = page.json()
         news = data["results"]
+        for new in news:
+            if 'currencies' in new:
+                print(new['currencies'])
         # producer.send("crypto_news", news)
     except:
         print("error")
