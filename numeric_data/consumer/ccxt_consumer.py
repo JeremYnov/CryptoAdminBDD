@@ -8,10 +8,7 @@ load_dotenv()
 
 
 # get database url
-mongo_url = "mongodb://{username}:{password}@mongodb:27017".format(
-    username=os.getenv("MONGO_ROOT_USERNAME"), password=os.getenv("MONGO_ROOT_PASSWORD")
-)
-client = MongoClient(mongo_url)
+client = MongoClient(f"mongodb://{os.getenv('MONGO_ROOT_USERNAME')}:{os.getenv('MONGO_ROOT_PASSWORD')}@mongodb:27017")
 # database connection
 database = client[os.getenv("MONGO_DATABASE")]
 
@@ -31,7 +28,7 @@ consumer = KafkaConsumer(
 
 for ccxt_raw in consumer:
     crypto = loads(ccxt_raw.value.decode("utf-8"))
-    print(crypto)
+    # print(crypto)
     numeric_data_db.insert_one(
         {
             "date_time": crypto["datetime"],
@@ -42,5 +39,5 @@ for ccxt_raw in consumer:
             "average": crypto["average"],
         }
     )  
-    # for n in numeric_data_db.find():
-    #     print(n)
+    for n in numeric_data_db.find():
+        print(n)

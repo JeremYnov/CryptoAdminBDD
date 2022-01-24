@@ -8,10 +8,10 @@ from time import sleep
 load_dotenv()
 
 # Kafka producer
-# producer = KafkaProducer(
-#     bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVER"),
-#     value_serializer=lambda x: dumps(x).encode("utf-8"),
-# )
+producer = KafkaProducer(
+    bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVER"),
+    value_serializer=lambda x: dumps(x).encode("utf-8"),
+)
 
 # Get binance market data
 binance = ccxt.binanceus()
@@ -31,9 +31,8 @@ while True:
                 or ticker_symbol == "ETH"
                 or ticker_symbol == "SOL"
             ):
-                print(ticker)
                 # Send data with kafka producer
-                # producer.send("crypto_raw", ticker)
+                producer.send("crypto_raw", ticker)
     except:
         print("ooops")
     sleep(20)
