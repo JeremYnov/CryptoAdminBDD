@@ -13,7 +13,7 @@ load_dotenv()
 #     value_serializer=lambda x: dumps(x).encode("utf-8"),
 # )
 
-url = "{url}?auth_token={token}".format(
+url = "{url}?auth_token={token}&currencies=BTC,ETH,SOL".format(
     url=os.getenv("CRYPTO_PANIC_API_URL"), token=os.getenv("CRYPTO_PANIC_API_KEY")
 )
 print(url)
@@ -29,4 +29,4 @@ while True:
         # producer.send("crypto_news", news)
     except:
         print("error")
-    sleep(1)
+    sleep(20)
