@@ -3,7 +3,7 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -12.800000000000002,
+    "scrollTop": -19.200000000000003,
     "scrollLeft": 0,
     "zoomLevel": 1,
     "show": {
@@ -137,13 +137,82 @@
               "widthDefault": 60
             },
             "id": "192b9f4c-4fd2-4bcd-8fa0-c73cb13e7650"
+          },
+          {
+            "name": "high",
+            "comment": "",
+            "dataType": "FLOAT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "772cd26c-3fe3-4bb7-8e8f-448b39a0dcaf"
+          },
+          {
+            "name": "low",
+            "comment": "",
+            "dataType": "FLOAT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d53f2980-03f8-4d45-9e65-a563771d8e10"
+          },
+          {
+            "name": "average",
+            "comment": "",
+            "dataType": "FLOAT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "41858320-d088-43be-aa06-37713edaa3bf"
           }
         ],
         "ui": {
           "active": false,
           "left": 123.2,
-          "top": 60,
-          "zIndex": 4,
+          "top": 59.2,
+          "zIndex": 46,
           "widthName": 80.76806640625,
           "widthComment": 60
         },
@@ -294,10 +363,10 @@
           }
         ],
         "ui": {
-          "active": true,
+          "active": false,
           "left": 284.8,
           "top": 285.6,
-          "zIndex": 5,
+          "zIndex": 3,
           "widthName": 112.55712890625,
           "widthComment": 60
         },
@@ -311,7 +380,7 @@
           {
             "name": "id",
             "comment": "",
-            "dataType": "",
+            "dataType": "INTEGER",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -334,7 +403,7 @@
           {
             "name": "symbol",
             "comment": "",
-            "dataType": "",
+            "dataType": "STR",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -355,15 +424,15 @@
             "id": "1bcaffd5-b8eb-41bf-b683-c00b8b0516eb"
           },
           {
-            "name": "title",
+            "name": "text",
             "comment": "",
-            "dataType": "",
+            "dataType": "STR",
             "default": "",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -378,38 +447,15 @@
             "id": "42eeb377-0cec-43a4-b2db-3b7e2f0f45cd"
           },
           {
-            "name": "reddit",
+            "name": "source",
             "comment": "",
-            "dataType": "",
+            "dataType": "STR",
             "default": "",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "f8f7d60c-366b-4a6e-87ce-4f3726995749"
-          },
-          {
-            "name": "",
-            "comment": "",
-            "dataType": "",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -426,9 +472,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 656,
-          "top": 31.2,
-          "zIndex": 3,
+          "left": 523.2,
+          "top": 40.8,
+          "zIndex": 29,
           "widthName": 60,
           "widthComment": 60
         },
