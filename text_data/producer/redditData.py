@@ -30,26 +30,19 @@ def get_data_reddit():
     # while the token is valid (~2 hours) we just add headers=headers to our requests
     requests.get("https://oauth.reddit.com/api/v1/me", headers=headers)
 
-    # make a request for the trending posts in /r/Python
-    res = requests.get("https://oauth.reddit.com/r/bitcoin/hot", headers=headers)
+    # The 3 subreddits we want to extract data from
+    interesing_reddit = ['bitcoin','ethereum','solana']
+    reddit_data = []
+    for reddit in interesing_reddit:
+        # make a request for the trending posts in /r/Python
+        res = requests.get("https://oauth.reddit.com/r/{}/hot".format(reddit), headers=headers)
+        # loop through each post retrieved from GET request
+        for post in res.json()["data"]["children"]:
+            # append relevant data to dataframe
+            reddit_data.append({"subreddit" : post["data"]["subreddit"], 
+                                "title" : post["data"]["title"],
+                                "selftext" : post["data"]["selftext"]})
 
-    df = pd.DataFrame()  # initialize dataframe
+    return reddit_data
 
-    # loop through each post retrieved from GET request
-    for post in res.json()["data"]["children"]:
-        # append relevant data to dataframe
-        df = df.append(
-            {
-                "subreddit": post["data"]["subreddit"],
-                "title": post["data"]["title"],
-                "selftext": post["data"]["selftext"],
-                # "upvote_ratio": post["data"]["upvote_ratio"],
-                # "ups": post["data"]["ups"],
-                # "downs": post["data"]["downs"],
-                # "score": post["data"]["score"],
-            },
-            ignore_index=True,
-        )
-    return df.to_dict('index')
-
-print(get_data_reddit())
+# print(get_data_reddit())

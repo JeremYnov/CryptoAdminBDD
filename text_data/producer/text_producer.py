@@ -18,12 +18,12 @@ producer = KafkaProducer(
 
 while True:
     try:
-        data_crypto_panic = get_data_crypto_panic()
+        # data_crypto_panic = get_data_crypto_panic()
         data_redit = get_data_reddit()
         data_twitter = get_data_twitter()
 
         dict_data= {
-            "cryptopanic" : data_crypto_panic,
+            # "cryptopanic" : data_crypto_panic,
             "redit": data_redit,
             "data_twitter": data_twitter
         }

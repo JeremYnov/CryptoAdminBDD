@@ -61,4 +61,4 @@ def get_data_twitter():
 
     return tweets_by_symbol
 
-print(get_data_twitter())
+# print(get_data_twitter())
