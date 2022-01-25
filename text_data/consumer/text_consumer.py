@@ -26,8 +26,15 @@ consumer = KafkaConsumer(
 # on balaye la liste news qui contient les news pour garder seulement les news qui ont un "code" crypto
 for new in consumer:
     crypto = loads(new.value.decode("utf-8"))
+
+    # arborescence crypto = {
+    # "redit": [{"subreddit": "BTC", "title": "title"},{"subreddit": "BTC", "title": "text"}]},
+    # "data_twitter": [{"Tweet": "text", "Symbol": "BTC"},{"Tweet": "text", "Symbol": "BTC"}]},
+    # "cryptopanic": [{"title": "text", "code": "BTC"},{"title": "text", "code": "BTC"}]}
+
     # insert data redit
     for redit in crypto["redit"]:
+        # if data not in collection -> insert
         if not text_data_db.find_one({"text": redit["title"]}):
             text_data_db.insert_one({
                 "symbol" : redit["subreddit"],
@@ -36,14 +43,38 @@ for new in consumer:
                 }
             )
     
-    for redit in crypto["data_twitter"]:
-        if not text_data_db.find_one({"text": redit["Tweet"]}):
+    for twitter in crypto["data_twitter"]:
+        # if data not in collection -> insert
+        if not text_data_db.find_one({"text": twitter["Tweet"]}):
             text_data_db.insert_one({
-                "symbol" : redit["Symbol"],
-                "text" : redit["Tweet"],
+                "symbol" : twitter["Symbol"],
+                "text" : twitter["Tweet"],
                 "source" : "twitter"
                 }
             )
+
+    for new in crypto["cryptopanic"]:
+        # dictionnaire insert in mongo
+        dict_cryptopanic = {}
+        # if symbol exists in dict
+        if 'currencies' in new:
+            # if data not in collection -> insert
+            if not text_data_db.find_one({"text": new["title"]}):
+                # insert in dict title
+                dict_cryptopanic["title"] = new["title"]
+                # list contains symbols
+                list_symbol = []
+                # for in symbols
+                for code in new["currencies"] :
+                    if code["code"] == "BTC" or code["code"] == "ETH" or code["code"] == "SOL":
+                        list_symbol.append(code["code"])
+                # insert in dict list symbol associeted title
+                dict_cryptopanic["symbol"] = list_symbol
+                dict_cryptopanic["source"] = "cryptopanic"
+                # insert in mongodb
+                text_data_db.insert_one(dict_cryptopanic)
+    
+    
     
     for n in text_data_db.find():
         print(n)
