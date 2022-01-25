@@ -212,7 +212,7 @@
           "active": false,
           "left": 123.2,
           "top": 59.2,
-          "zIndex": 46,
+          "zIndex": 2,
           "widthName": 80.76806640625,
           "widthComment": 60
         },
@@ -268,29 +268,6 @@
               "widthDefault": 60
             },
             "id": "c8b0149b-eef8-4f75-8c0c-270008c8302c"
-          },
-          {
-            "name": "text",
-            "comment": "",
-            "dataType": "",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "a0879265-1a9c-42d9-83f5-73183fca7401"
           },
           {
             "name": "polarity",
@@ -363,10 +340,10 @@
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 284.8,
           "top": 285.6,
-          "zIndex": 3,
+          "zIndex": 4,
           "widthName": 112.55712890625,
           "widthComment": 60
         },
@@ -403,7 +380,7 @@
           {
             "name": "symbol",
             "comment": "",
-            "dataType": "STR",
+            "dataType": "str or list",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -473,8 +450,8 @@
         "ui": {
           "active": false,
           "left": 523.2,
-          "top": 40.8,
-          "zIndex": 29,
+          "top": 40,
+          "zIndex": 3,
           "widthName": 60,
           "widthComment": 60
         },
