@@ -61,7 +61,7 @@ for new in consumer:
             # if data not in collection -> insert
             if not text_data_db.find_one({"text": new["title"]}):
                 # insert in dict title
-                dict_cryptopanic["title"] = new["title"]
+                dict_cryptopanic["text"] = new["title"]
                 # list contains symbols
                 list_symbol = []
                 # for in symbols
