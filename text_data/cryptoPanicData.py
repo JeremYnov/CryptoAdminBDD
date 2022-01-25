@@ -22,7 +22,6 @@ while True:
     try:
         page = requests.get(url)
         data = page.json()
-        print(data)
         news = data["results"]
         # producer.send("crypto_news", news)
     except:
