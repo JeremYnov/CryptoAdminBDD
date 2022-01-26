@@ -27,9 +27,11 @@ while True:
 
         text_data = database["text_data"]
         text_data_db = database.get_collection("text_data")
+        list_text_data_db = []
         for data in text_data_db.find({}, {'_id': 0}) :
-            print(data)
-            producer.send("sentiment", data)
+            list_text_data_db.append(data)
+        dict_data = {"data" : list_text_data_db}
+        producer.send("sentiment", dict_data)
     except:
         print("ooops")
     sleep(20)
