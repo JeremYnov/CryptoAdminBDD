@@ -207,6 +207,8 @@ services:
       context: ./sentiment_analysis
     depends_on:
       - mongodb
+      - text-consumer
+      - namenode
     volumes:
       - ./sentiment_analysis:/usr/src
       - ./.env:/usr/src/.env
