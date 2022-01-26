@@ -197,6 +197,21 @@ services:
       - ./.env:/usr/src/.env
     networks:
       - kafka
+  
+  sentiment-analysis:
+    container_name: sentiment-analysis
+    restart: on-failure
+    command: python3 ./sentiment_analysis.py
+    build:
+      dockerfile: ../Dockerfile_python
+      context: ./sentiment_analysis
+    depends_on:
+      - mongodb
+    volumes:
+      - ./sentiment_analysis:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka
 
 volumes:
   redis_data:
