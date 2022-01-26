@@ -31,7 +31,7 @@ while True:
                 or ticker_symbol == "ETH"
                 or ticker_symbol == "SOL"
             ):
-                # Send data with kafka producer
+                # print(ticker)
                 producer.send("crypto_raw", ticker)
     except:
         print("ooops")

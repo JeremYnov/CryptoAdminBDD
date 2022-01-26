@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
-
 from textblob import TextBlob
 from bson.objectid import ObjectId
 import csv
 import glob
-import subprocess
+
 
 load_dotenv()
 

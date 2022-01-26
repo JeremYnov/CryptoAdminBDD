@@ -80,5 +80,5 @@ for new in consumer:
     
     
     
-    for n in text_data_db.find():
-        print(n)
+    # for n in text_data_db.find():
+    #     print(n)

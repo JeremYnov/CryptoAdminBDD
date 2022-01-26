@@ -39,5 +39,5 @@ for ccxt_raw in consumer:
             "average": crypto["average"],
         }
     )  
-    for n in numeric_data_db.find():
-        print(n)
+    # for n in numeric_data_db.find():
+    #     print(n)
