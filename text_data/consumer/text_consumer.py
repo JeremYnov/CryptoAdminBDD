@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from kafka import KafkaConsumer
 from json import loads
+from datetime import datetime
 
 load_dotenv()
 
@@ -39,7 +40,8 @@ for new in consumer:
             text_data_db.insert_one({
                 "symbol" : redit["subreddit"],
                 "text" : redit["title"],
-                "source" : "redit"
+                "source" : "redit",
+                "date": datetime.now().strftime('%d-%m-%Y')
                 }
             )
     
@@ -49,7 +51,8 @@ for new in consumer:
             text_data_db.insert_one({
                 "symbol" : twitter["Symbol"],
                 "text" : twitter["Tweet"],
-                "source" : "twitter"
+                "source" : "twitter",
+                "date": datetime.now().strftime('%d-%m-%Y')
                 }
             )
 
@@ -71,6 +74,7 @@ for new in consumer:
                 # insert in dict list symbol associeted title
                 dict_cryptopanic["symbol"] = list_symbol
                 dict_cryptopanic["source"] = "cryptopanic"
+                dict_cryptopanic["date"] = datetime.now().strftime('%d-%m-%Y')
                 # insert in mongodb
                 text_data_db.insert_one(dict_cryptopanic)
     
