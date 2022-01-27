@@ -3,7 +3,7 @@ import redis
 
 
 # connect to redis
-client = redis.Redis(host="localhost", port=6379)
+client = redis.Redis(host="172.17.0.1", port=6379)
 
 
 def create_key_value(key, value):

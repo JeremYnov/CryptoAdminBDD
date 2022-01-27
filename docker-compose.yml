@@ -1,21 +1,28 @@
-version: '3.8'
+version: '3.2'
 services:
   # ======================
   # Databases
   # ======================
   mongodb:
-    image: mongo:5.0
+    image: mongo
+    container_name: mongodb
+    hostname: mongodb
+    restart: unless-stopped
     command: mongod --auth
-    ports:
-      - 27017:27017
-    volumes:
-      - ./data/mongodb/data/db/:/data/db/
+    env_file: .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: big-data-project
+      MONGODB_DATA_DIR: /data/db
+      MONGODB_LOG_DIR: /dev/null
+    volumes:
+      - mongo_db:/data/db
+    depends_on:
+      - redis
     networks:
       - kafka
+    
 
   redis:
     image: redis:latest
@@ -143,15 +150,31 @@ services:
     networks:
       - kafka
 
-  news-producer:
-    container_name: news-producer
+  text-producer:
+    container_name: text-producer
     restart: on-failure
-    command: python3 ./news_producer.py
+    command: python3 ./text_producer.py
     build:
       dockerfile: ../../Dockerfile_python
       context: ./text_data/producer
     volumes:
       - ./text_data/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka
+  
+  sentiment-producer:
+    container_name: sentiment-producer
+    restart: on-failure
+    command: python3 ./sentiment_producer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./sentiment_analysis/producer
+    volumes:
+      - ./sentiment_analysis/producer:/usr/src
       - ./.env:/usr/src/.env
     depends_on:
       kafka:
@@ -175,27 +198,62 @@ services:
     networks:
       - kafka
 
-  news-consumer:
-    container_name: news-consumer
+  text-consumer:
+    container_name: text-consumer
     restart: on-failure
-    command: python3 ./news_consumer.py
+    command: python3 ./text_consumer.py
     build:
       dockerfile: ../../Dockerfile_python
       context: ./text_data/consumer
     depends_on:
       - mongodb
-      - news-producer
+      - text-producer
     volumes:
       - ./text_data/consumer:/usr/src
       - ./.env:/usr/src/.env
     networks:
       - kafka
+  
+  sentiment-consumer:
+    container_name: sentiment-consumer
+    restart: on-failure
+    command: python3 ./sentiment_consumer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./sentiment_analysis/consumer
+    depends_on:
+      - mongodb
+      - text-consumer
+    volumes:
+      - ./sentiment_analysis/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka
+  
+  # sentiment-analysis:
+  #   container_name: sentiment-analysis
+  #   restart: on-failure
+  #   command: python3 ./sentiment_analysis.py
+  #   build:
+  #     dockerfile: ../Dockerfile_python
+  #     context: ./sentiment_analysis
+  #   depends_on:
+  #     - mongodb
+  #     - text-consumer
+  #     - namenode
+  #   volumes:
+  #     - ./sentiment_analysis:/usr/src
+  #     - ./.env:/usr/src/.env
+  #   networks:
+  #     - kafka
 
 volumes:
   redis_data:
   hadoop_namenode:
   hadoop_datanode:
   hadoop_historyserver:
+  mongo_db:
 
 networks:
   kafka:
+    driver: "bridge"
