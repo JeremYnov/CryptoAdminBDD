@@ -1,3 +1,4 @@
+from logging import NullHandler
 import yfinance as yf
 import streamlit as st
 from PIL import Image
@@ -5,12 +6,24 @@ from urllib.request import urlopen
 from datetime import date
 from scripts.cmc_scraping import scrape
 import pandas as pd
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
 today = date.today()
 min_date = date(2014, 10, 1)
-
+load_dotenv()
 
 def app():
+    # mongoDB connexion
+    client = MongoClient(f"mongodb://{os.getenv('MONGO_ROOT_USERNAME')}:{os.getenv('MONGO_ROOT_PASSWORD')}@mongodb:27017")
+    # database connexion
+    database = client[os.getenv("MONGO_DATABASE")]
+    # Get collections 
+    numerics_data_db = database.get_collection("numeric_data")
+    sentiment_data_db = database.get_collection("sentiment_data")
+    
+   
     # Title
     st.title("Cryptocurrency Dashboard")
 
@@ -68,3 +81,9 @@ def app():
     st.header("Daily Prices")
     # Display a chart daily prices
     st.bar_chart(BTCHis.Close)
+    
+    
+     # get all data by name sort in ascendind order
+    numerics = numerics_data_db.find_one({},{'_id': 0, 'symbol': 1}).sort("symbol")
+    st.header("test")
+    st.header(numerics)
