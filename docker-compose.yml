@@ -231,7 +231,7 @@ services:
       - kafka
 
 # ======================
-# Scripts
+# Interface
 # ======================    
   streamlit:
     container_name: interface
@@ -247,6 +247,8 @@ services:
       - sentiment-consumer
     ports:
       - 8501:8501
+    networks:
+      - kafka
   
   # sentiment-analysis:
   #   container_name: sentiment-analysis

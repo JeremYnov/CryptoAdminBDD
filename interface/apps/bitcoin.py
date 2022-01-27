@@ -1,4 +1,3 @@
-from logging import NullHandler
 import yfinance as yf
 import streamlit as st
 from PIL import Image
@@ -14,16 +13,21 @@ today = date.today()
 min_date = date(2014, 10, 1)
 load_dotenv()
 
+
 def app():
     # mongoDB connexion
-    client = MongoClient(f"mongodb://{os.getenv('MONGO_ROOT_USERNAME')}:{os.getenv('MONGO_ROOT_PASSWORD')}@mongodb:27017")
+    client = MongoClient(
+        "mongodb://{username}:{password}@mongodb:27017".format(
+            username=os.getenv("MONGO_ROOT_USERNAME"),
+            password=os.getenv("MONGO_ROOT_PASSWORD"),
+        )
+    )
     # database connexion
     database = client[os.getenv("MONGO_DATABASE")]
-    # Get collections 
+    # Get collections
     numerics_data_db = database.get_collection("numeric_data")
     sentiment_data_db = database.get_collection("sentiment_data")
-    
-   
+
     # Title
     st.title("Cryptocurrency Dashboard")
 
@@ -81,9 +85,39 @@ def app():
     st.header("Daily Prices")
     # Display a chart daily prices
     st.bar_chart(BTCHis.Close)
-    
-    
-     # get all data by name sort in ascendind order
-    numerics = numerics_data_db.find_one({},{'_id': 0, 'symbol': 1}).sort("symbol")
-    st.header("test")
-    st.header(numerics)
+
+    # Get all symbols without doublon
+    symbols = numerics_data_db.find({"symbol": {"$regex": "BTC/"}}).distinct("symbol")
+    st.header("Real Time Price")
+    # Get real time price from ccxt API
+    for symbol in symbols:
+        data_by_symbol = (
+            numerics_data_db.find({"symbol": symbol}, {"_id": False})
+            .limit(1)
+            .sort("$natural", -1)
+        )
+        for data in data_by_symbol:
+            data_by_symbol_df = pd.DataFrame(data, index=[0])
+            st.write(data_by_symbol_df)
+     
+    st.header("Sentiment Analysis")       
+    # Get sentiment analysis avg 
+    # Needed by interface to say if the sentiments ar good or bad
+    avg_sentiments = sentiment_data_db.aggregate(
+        [
+            {
+                "$group": {
+                    "_id": "$symbol",
+                    "avgPolarity": {"$avg": "$polarity"},
+                    "avgSubjectivity": {"$avg": "$subjectivity"},
+                }
+            }
+        ]
+    )
+    # Get only sentiment avg for the page symbol
+    st.write('Polarity is float which lies in the range of [-1,1] where 1 means positive statement and -1 means a negative statement. Subjective sentences generally refer to personal opinion, emotion or judgment whereas objective refers to factual information. Subjectivity is also a float which lies in the range of [0,1].')
+    for avg_sentiment_by_symbol in avg_sentiments:
+        if avg_sentiment_by_symbol["_id"] == "BTC":
+            col1, col2 = st.columns(2)
+            col1.metric("","Polarity", round(avg_sentiment_by_symbol['avgPolarity'],2))
+            col2.metric("","Subjectivity", round(avg_sentiment_by_symbol['avgSubjectivity'], 2))
