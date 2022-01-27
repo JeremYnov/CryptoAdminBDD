@@ -29,7 +29,7 @@ consumer = KafkaConsumer(
     bootstrap_servers=[os.getenv("KAFKA_BOOTSTRAP_SERVER")],
     api_version=(0, 10, 1),
 )
-print(consumer)
+
 for all_data in consumer:
 
     all_data_text = loads(all_data.value.decode("utf-8"))
@@ -60,11 +60,12 @@ for all_data in consumer:
                 dict_sentiment["symbol"] = data["symbol"]
                 dict_sentiment['_id'] = ObjectId()
                 sentiment_data_db.insert_one(dict_sentiment)
-            # delete data in text_data_db
-            text_data_db.delete_one({'text': data["text"]})
         # list send on csv send on hadoop
         list_text_data_hadoop.append(data)
         
+        if 'text' in data:
+            # delete data in text_data_db
+            text_data_db.delete_one({'text': data["text"]})
         
 
     # write csv (text data) for hadoop
