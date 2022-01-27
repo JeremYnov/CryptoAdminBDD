@@ -24,8 +24,8 @@ while True:
         data = page.json()
         news = data["results"]
         for new in news:
-            if 'currencies' in new:
-                print(new['currencies'])
+            if "currencies" in new:
+                print(new["currencies"])
         # producer.send("crypto_news", news)
     except:
         print("error")

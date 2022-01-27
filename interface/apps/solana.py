@@ -11,7 +11,7 @@ min_date = date(2014, 10, 1)
 
 
 def app():
-   # Title
+    # Title
     st.title("Cryptocurrency Dashboard")
 
     # Defining ticker variable
@@ -59,7 +59,7 @@ def app():
             if crypto["Name"] == "Solana":
                 # Add data on df for display on st.table
                 crypto_df = pd.DataFrame(crypto, index=[0])
-                # Create the table 
+                # Create the table
                 st.table(crypto_df)
                 break
     else:

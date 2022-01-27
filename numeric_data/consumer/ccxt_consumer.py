@@ -25,7 +25,7 @@ symbol_db = database.get_collection("symbol")
 news_db = database.get_collection("news")
 crypto_db = database.get_collection("crypto")
 
-# Create Kafka consumer 
+# Create Kafka consumer
 consumer = KafkaConsumer(
     "crypto_raw",
     bootstrap_servers=[os.getenv("KAFKA_BOOTSTRAP_SERVER")],

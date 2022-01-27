@@ -18,6 +18,7 @@ def cleanTweet(tweet):
     temp = re.sub(r"www.\S+", "", temp).strip()
     return temp
 
+
 # Get twitter API credentials from redis database
 keys = get_value_by_key(var_env)
 
@@ -55,5 +56,5 @@ for key, value in search_terms.items():
         result_type="recent",
     ).items(100)
     # clean and add tweets in tweets_by_symbol array in JSON format
-    for tweet in tweets: 
+    for tweet in tweets:
         tweets_by_symbol.append({"Symbol": key, "Tweet": cleanTweet(tweet.full_text)})

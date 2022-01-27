@@ -38,9 +38,13 @@ def scrape(date="20211219/"):
         crypto_name = name_column.find(
             "a", attrs={"class": "cmc-table__column-name--name cmc-link"}
         )
-        
-        
-        if crypto_name.text == "Bitcoin" or  crypto_name.text == "Ethereum" or crypto_name.text == "Solana" and count < 4 : 
+
+        if (
+            crypto_name.text == "Bitcoin"
+            or crypto_name.text == "Ethereum"
+            or crypto_name.text == "Solana"
+            and count < 4
+        ):
             # Store the cryptocurrency coin market cap
             crypto_market_cap = row.find(
                 "td",
@@ -48,7 +52,7 @@ def scrape(date="20211219/"):
                     "cmc-table__cell cmc-table__cell--sortable cmc-table__cell--right cmc-table__cell--sort-by__market-cap"
                 },
             ).text.strip()
-            
+
             # Find and store the crypto price
             crypto_price = row.find(
                 "td",
@@ -64,21 +68,25 @@ def scrape(date="20211219/"):
                 },
             ).text.strip()
             # Split data
-            crypto_circulating_supply = crypto_circulating_supply_and_symbol.split(" ")[0]
+            crypto_circulating_supply = crypto_circulating_supply_and_symbol.split(" ")[
+                0
+            ]
             crypto_symbol = crypto_circulating_supply_and_symbol.split(" ")[1]
 
             # Store scrapping data in JSON format
-            crypto_list.append({
-                "Name": crypto_name.text,
-                "Symbol": crypto_symbol,
-                "Market Cap": crypto_market_cap,
-                "Price": crypto_price,
-                "Circulating Supply" : crypto_circulating_supply
-            })
+            crypto_list.append(
+                {
+                    "Name": crypto_name.text,
+                    "Symbol": crypto_symbol,
+                    "Market Cap": crypto_market_cap,
+                    "Price": crypto_price,
+                    "Circulating Supply": crypto_circulating_supply,
+                }
+            )
             count += 1
     return crypto_list
+
 
 # Run the scrape function
 scrapped_data = scrape(date="20211219/")
 print(scrapped_data)
-

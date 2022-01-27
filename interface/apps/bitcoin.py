@@ -59,7 +59,7 @@ def app():
             if crypto["Name"] == "Bitcoin":
                 # Add data on df for display on st.table
                 crypto_df = pd.DataFrame(crypto, index=[0])
-                # Create the table 
+                # Create the table
                 st.table(crypto_df)
                 break
     else:
