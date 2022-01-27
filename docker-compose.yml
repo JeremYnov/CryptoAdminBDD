@@ -22,7 +22,7 @@ services:
       - redis
     networks:
       - kafka
-    
+
 
   redis:
     image: redis:latest
@@ -39,6 +39,8 @@ services:
 # ======================
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    build:
+      ./hadoop/namenode
     container_name: namenode
     restart: always
     ports:
@@ -46,6 +48,7 @@ services:
       - 9000:9000
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
+      - ./sentiment_analysis/consumer/csv:/csv
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -165,7 +168,7 @@ services:
         condition: service_healthy
     networks:
       - kafka
-  
+
   sentiment-producer:
     container_name: sentiment-producer
     restart: on-failure
@@ -213,7 +216,7 @@ services:
       - ./.env:/usr/src/.env
     networks:
       - kafka
-  
+
   sentiment-consumer:
     container_name: sentiment-consumer
     restart: on-failure
@@ -232,7 +235,7 @@ services:
 
 # ======================
 # Scripts
-# ======================    
+# ======================
   streamlit:
     container_name: interface
     command: streamlit run app.py
@@ -247,7 +250,7 @@ services:
       - sentiment-consumer
     ports:
       - 8501:8501
-  
+
   # sentiment-analysis:
   #   container_name: sentiment-analysis
   #   restart: on-failure
