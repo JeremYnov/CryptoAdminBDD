@@ -1,6 +1,10 @@
 FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
 
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+RUN apt -y update
+RUN apt -y install vim cron
+
+RUN echo "* * * * * bash /push_to_hdfs.sh >> /var/log/push_to_hdfs.log 2>&1" >> /etc/crontab
+RUN update-rc.d cron defaults
 
 HEALTHCHECK CMD curl -f http://localhost:9870/ || exit 1
 
@@ -10,6 +14,9 @@ VOLUME /hadoop/dfs/name
 
 ADD run.sh /run.sh
 RUN chmod a+x /run.sh
+
+ADD push_to_hdfs.sh /push_to_hdfs.sh
+RUN chmod a+x /push_to_hdfs.sh
 
 EXPOSE 9870
 
