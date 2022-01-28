@@ -1,4 +1,3 @@
-# import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
@@ -36,7 +35,7 @@ def scrape(date):
         crypto_name = name_column.find(
             "a", attrs={"class": "cmc-table__column-name--name cmc-link"}
         )
-
+        # Condition to get data only for our 3 cryptos
         if (
             crypto_name.text == "Bitcoin"
             or crypto_name.text == "Ethereum"
@@ -58,6 +57,7 @@ def scrape(date):
                     "class": "cmc-table__cell cmc-table__cell--sortable cmc-table__cell--right cmc-table__cell--sort-by__price"
                 },
             ).text.strip()
+
             # Find and store the crypto supply and symbol
             crypto_circulating_supply_and_symbol = row.find(
                 "td",
@@ -65,6 +65,7 @@ def scrape(date):
                     "class": "cmc-table__cell cmc-table__cell--sortable cmc-table__cell--right cmc-table__cell--sort-by__circulating-supply"
                 },
             ).text.strip()
+
             # Split data
             crypto_circulating_supply = crypto_circulating_supply_and_symbol.split(" ")[
                 0
