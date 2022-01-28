@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from json import dumps
 from kafka import KafkaProducer
 from time import sleep
-from cryptoPanicData import get_data_crypto_panic
-from redditData import get_data_reddit
-from twitterData import get_data_twitter
+from crypto_panic_data import get_data_crypto_panic
+from reddit_data import get_data_reddit
+from twitter_data import get_data_twitter
 
 load_dotenv()
 
