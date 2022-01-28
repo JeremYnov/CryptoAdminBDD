@@ -21,7 +21,7 @@ services:
     depends_on:
       - redis
     networks:
-      - kafka
+      - admin-bdd-final-project
 
 
   redis:
@@ -32,7 +32,7 @@ services:
       - redis_data:/data
     command: [ "redis-server"]
     networks:
-      - kafka
+      - admin-bdd-final-project
 
 # ======================
 # Hadoop
@@ -123,7 +123,7 @@ services:
       - 9092:9092
       - 30001:30001
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   zookeeper:
     image: confluentinc/cp-zookeeper
@@ -132,7 +132,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - kafka
+      - admin-bdd-final-project
 
 # ======================
 # Scripts
@@ -151,7 +151,7 @@ services:
       kafka:
         condition: service_healthy
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   text-producer:
     container_name: text-producer
@@ -167,7 +167,7 @@ services:
       kafka:
         condition: service_healthy
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   sentiment-producer:
     container_name: sentiment-producer
@@ -183,7 +183,7 @@ services:
       kafka:
         condition: service_healthy
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   ccxt-consumer:
     container_name: ccxt-consumer
@@ -199,7 +199,7 @@ services:
       - ./numeric_data/consumer:/usr/src
       - ./.env:/usr/src/.env
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   text-consumer:
     container_name: text-consumer
@@ -215,7 +215,7 @@ services:
       - ./text_data/consumer:/usr/src
       - ./.env:/usr/src/.env
     networks:
-      - kafka
+      - admin-bdd-final-project
 
   sentiment-consumer:
     container_name: sentiment-consumer
@@ -231,7 +231,7 @@ services:
       - ./sentiment_analysis/consumer:/usr/src
       - ./.env:/usr/src/.env
     networks:
-      - kafka
+      - admin-bdd-final-project
 
 # ======================
 # Interface
@@ -251,24 +251,7 @@ services:
     ports:
       - 8501:8501
     networks:
-      - kafka
-
-  # sentiment-analysis:
-  #   container_name: sentiment-analysis
-  #   restart: on-failure
-  #   command: python3 ./sentiment_analysis.py
-  #   build:
-  #     dockerfile: ../Dockerfile
-  #     context: ./sentiment_analysis
-  #   depends_on:
-  #     - mongodb
-  #     - text-consumer
-  #     - namenode
-  #   volumes:
-  #     - ./sentiment_analysis:/usr/src
-  #     - ./.env:/usr/src/.env
-  #   networks:
-  #     - kafka
+      - admin-bdd-final-project
 
 volumes:
   redis_data:
@@ -278,5 +261,5 @@ volumes:
   mongo_db:
 
 networks:
-  kafka:
+  admin-bdd-final-project:
     driver: "bridge"
