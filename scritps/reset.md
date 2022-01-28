@@ -1,7 +1,7 @@
 On eteint puis on casse les différents volume
 ```
-docker-compose down
-docker-compose up -v
+docker-compose down -v
+docker-compose up 
 ```
 
 être à la racine du projet
