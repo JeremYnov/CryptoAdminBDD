@@ -27,7 +27,7 @@
     - consumer/ccxt_consumer : normalise les données et les insere en base de données
     - producer
         - config_redis.py : contient la connexion à la base redis pour recuperer les tokens ainsi que la fonction pour recuperer les tokens
-        - cryptoPanicData.py, redditData.py, twitterData.py : ces 3 scripts retourne les datas que l'ont veut récuperer 
+        - cryptoPanicData.py, redditData.py, twitterData.py : ces 3 scripts retourne les datas que l'ont veut récuperer
         - text_producer.py : récupere les 3 types de données avec les scripts au dessus, et les envoies au consumer
 
 - .env : contient toutes les variables d'environnement qui reste static, tel le réseau kafka, les tokens ou les accés de connexion pour mongo (il y'en a un dans chaque sous dossier)
@@ -67,7 +67,7 @@
         - kafka
             -driver: "bridge"
 
-- Dockerfile_python : lancer les différentes commande dans les container qui execute des scripts python
+- Dockerfile : lancer les différentes commande dans les container qui execute des scripts python
 
 - hadoop.env : variable d'environnement hadoop
 

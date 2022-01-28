@@ -142,7 +142,7 @@ services:
     restart: on-failure
     command: python3 ./ccxt_producer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./numeric_data/producer
     volumes:
       - ./numeric_data/producer:/usr/src
@@ -158,7 +158,7 @@ services:
     restart: on-failure
     command: python3 ./text_producer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./text_data/producer
     volumes:
       - ./text_data/producer:/usr/src
@@ -174,7 +174,7 @@ services:
     restart: on-failure
     command: python3 ./sentiment_producer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./sentiment_analysis/producer
     volumes:
       - ./sentiment_analysis/producer:/usr/src
@@ -190,7 +190,7 @@ services:
     restart: on-failure
     command: python3 ./ccxt_consumer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./numeric_data/consumer
     depends_on:
       - mongodb
@@ -206,7 +206,7 @@ services:
     restart: on-failure
     command: python3 ./text_consumer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./text_data/consumer
     depends_on:
       - mongodb
@@ -222,7 +222,7 @@ services:
     restart: on-failure
     command: python3 ./sentiment_consumer.py
     build:
-      dockerfile: ../../Dockerfile_python
+      dockerfile: ../../Dockerfile
       context: ./sentiment_analysis/consumer
     depends_on:
       - mongodb
@@ -235,12 +235,12 @@ services:
 
 # ======================
 # Interface
-# ======================    
+# ======================
   streamlit:
     container_name: interface
     command: streamlit run app.py
     build:
-      dockerfile: ../Dockerfile_python
+      dockerfile: ../Dockerfile
       context: ./interface
     volumes:
       - ./interface:/usr/src
@@ -252,13 +252,13 @@ services:
       - 8501:8501
     networks:
       - kafka
-  
+
   # sentiment-analysis:
   #   container_name: sentiment-analysis
   #   restart: on-failure
   #   command: python3 ./sentiment_analysis.py
   #   build:
-  #     dockerfile: ../Dockerfile_python
+  #     dockerfile: ../Dockerfile
   #     context: ./sentiment_analysis
   #   depends_on:
   #     - mongodb
