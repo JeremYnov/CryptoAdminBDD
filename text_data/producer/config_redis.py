@@ -2,7 +2,7 @@ import base64
 import redis
 
 # connect to redis
-client = redis.Redis(host="172.17.0.1", port=6379)
+client = redis.Redis(host="redis", port=6379)
 
 
 def create_key_value(key, value):
@@ -38,5 +38,3 @@ var_env = [
 var_crypto_panic = ["CRYPTO_PANIC_API_KEY"]
 
 var_reddit = ["REDDIT_CLIENT_ID", "REDDIT_SECRET_TOKEN"]
-
-

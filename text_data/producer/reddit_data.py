@@ -1,8 +1,6 @@
 
 
 import requests
-import pandas as pd
-import time
 from config_redis import get_value_by_key, var_reddit
 
 def get_data_reddit():
@@ -45,7 +43,7 @@ def get_data_reddit():
         # loop through each post retrieved from GET request
         for post in res.json()["data"]["children"]:
             # append relevant data to dataframe
-            reddit_data.append({"subreddit" : post["data"]["subreddit"], 
+            reddit_data.append({"subreddit" : post["data"]["subreddit"],
                                 "title" : post["data"]["title"],
                                 "selftext" : post["data"]["selftext"]})
 

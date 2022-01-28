@@ -1,4 +1,3 @@
-import ccxt
 import os
 from dotenv import load_dotenv
 from json import dumps
@@ -33,7 +32,7 @@ while True:
         # list send on csv send on hadoop
         list_text_data_hadoop = []
         for data in text_data_db.find({}, {'_id': 0}):
-            
+
             # dict insert sentiment in mongo
             dict_sentiment = {}
             if 'text' in data:
@@ -46,7 +45,7 @@ while True:
                 if isinstance(data["symbol"], list):
                     for symbol in data["symbol"]:
                         dict_sentiment["symbol"] = symbol
-                        dict_sentiment['_id'] = ObjectId() 
+                        dict_sentiment['_id'] = ObjectId()
                         sentiment_data_db.insert_one(dict_sentiment)
 
                 else :
@@ -64,7 +63,7 @@ while True:
 
         print("text_data restant")
         print(text_data_db.find().count())
-        print("sentiment data")  
+        print("sentiment data")
         print(sentiment_data_db.find().count())
 
         producer.send("sentiment", data)

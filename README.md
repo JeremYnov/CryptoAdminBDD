@@ -21,7 +21,6 @@
         - csv : contient les datas textuel supprimer de la collection text_data apres avoir été analyser. ces csv seront envoyer dans hadoop
         - sentiment_producer.py : réalise l'analyse de sentiment, puis les stockent en base et supprime les datas textuel de la collection text_data et écris dans le csv les datas supprimer
         - function_sentiment.py : contient 3 fonctions qui permette d'aherer le code de sentiment_producer.py : recuperer la polarity du texte, recuperer la subjectivity du texte, et ecrire les datas dans le csv (creer le dossier csv si il n'existe pas)
-    - sentiment_analysis : fichier test pour savoir quel données sont dans la base (a une image docker pour lancer le script automatiquement)
 
 - text_data : contient un producer et un consumer qui vont récuperer les données textuel en streaming (twitter, reddit, cryptopanic)
     - consumer/ccxt_consumer : normalise les données et les insere en base de données

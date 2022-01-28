@@ -23,7 +23,6 @@ services:
     networks:
       - kafka
 
-
   redis:
     image: redis:latest
     ports:
