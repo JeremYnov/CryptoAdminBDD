@@ -1,0 +1,282 @@
+version: '3.2'
+services:
+  # ======================
+  # Databases
+  # ======================
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    hostname: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: big-data-project
+      MONGODB_DATA_DIR: /data/db
+      MONGODB_LOG_DIR: /dev/null
+    volumes:
+      - mongo_db:/data/db
+    depends_on:
+      - redis
+    networks:
+      - kafka
+
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server"]
+    networks:
+      - kafka
+
+# ======================
+# Hadoop
+# ======================
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    build:
+      ./hadoop/namenode
+    container_name: namenode
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ./sentiment_analysis/consumer/csv:/csv
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    restart: always
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./hadoop.env
+
+  nodemanager1:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
+
+
+# ======================
+# Kafka
+# ======================
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CREATE_TOPICS: crypto_raw,crypto_news
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    healthcheck:
+      test: ["CMD", "bash", "-c", "unset", "JMX_PORT", ";", "/bin/kafka-topics.sh", "--bootstrap-server", "localhost:29092", "--list"]
+      interval: 20s
+      timeout: 10s
+      retries: 4
+    ports:
+      - 29092:29092
+      - 9092:9092
+      - 30001:30001
+    networks:
+      - kafka
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka
+
+# ======================
+# Scripts
+# ======================
+  ccxt-producer:
+    container_name: ccxt-producer
+    restart: on-failure
+    command: python3 ./ccxt_producer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./numeric_data/producer
+    volumes:
+      - ./numeric_data/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka
+
+  text-producer:
+    container_name: text-producer
+    restart: on-failure
+    command: python3 ./text_producer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./text_data/producer
+    volumes:
+      - ./text_data/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka
+
+  sentiment-producer:
+    container_name: sentiment-producer
+    restart: on-failure
+    command: python3 ./sentiment_producer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./sentiment_analysis/producer
+    volumes:
+      - ./sentiment_analysis/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka
+
+  ccxt-consumer:
+    container_name: ccxt-consumer
+    restart: on-failure
+    command: python3 ./ccxt_consumer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./numeric_data/consumer
+    depends_on:
+      - mongodb
+      - ccxt-producer
+    volumes:
+      - ./numeric_data/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka
+
+  text-consumer:
+    container_name: text-consumer
+    restart: on-failure
+    command: python3 ./text_consumer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./text_data/consumer
+    depends_on:
+      - mongodb
+      - text-producer
+    volumes:
+      - ./text_data/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka
+
+  sentiment-consumer:
+    container_name: sentiment-consumer
+    restart: on-failure
+    command: python3 ./sentiment_consumer.py
+    build:
+      dockerfile: ../../Dockerfile_python
+      context: ./sentiment_analysis/consumer
+    depends_on:
+      - mongodb
+      - text-consumer
+    volumes:
+      - ./sentiment_analysis/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka
+
+# ======================
+# Interface
+# ======================    
+  streamlit:
+    container_name: interface
+    command: streamlit run app.py
+    build:
+      dockerfile: ../Dockerfile_python
+      context: ./interface
+    volumes:
+      - ./interface:/usr/src
+    depends_on:
+      - ccxt-consumer
+      - text-consumer
+      - sentiment-consumer
+    ports:
+      - 8501:8501
+    networks:
+      - kafka
+  
+  # sentiment-analysis:
+  #   container_name: sentiment-analysis
+  #   restart: on-failure
+  #   command: python3 ./sentiment_analysis.py
+  #   build:
+  #     dockerfile: ../Dockerfile_python
+  #     context: ./sentiment_analysis
+  #   depends_on:
+  #     - mongodb
+  #     - text-consumer
+  #     - namenode
+  #   volumes:
+  #     - ./sentiment_analysis:/usr/src
+  #     - ./.env:/usr/src/.env
+  #   networks:
+  #     - kafka
+
+volumes:
+  redis_data:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
+  mongo_db:
+
+networks:
+  kafka:
+    driver: "bridge"
