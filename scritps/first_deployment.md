@@ -1,3 +1,8 @@
+Lancer les containers
+```
+docker-compose up 
+```
+
 être à la racine du projet
 ```
 cd scripts
@@ -25,9 +30,4 @@ pip install -r requirements.txt
 Insertion des token en base pour récuperer les différentes source de donnée
 ```
 python sender_token.py
-```
-
-Lancer docker
-```
-docker-compose up 
 ```
