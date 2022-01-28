@@ -3,10 +3,16 @@
 import requests
 import pandas as pd
 import time
+from config_redis import get_value_by_key, var_reddit
 
 def get_data_reddit():
-    CLIENT_ID = "LlZQ0PdhzZokLLhHA56avw"
-    SECRET_TOKEN = "7HFRAddxFtsfw4Rx_vt8lz0A4katxQ"
+    """
+    get reddit data
+    return [list dict]
+    """
+    keys = get_value_by_key(var_reddit)
+    CLIENT_ID = keys["REDDIT_CLIENT_ID"]
+    SECRET_TOKEN = keys["REDDIT_SECRET_TOKEN"]
     # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
     auth = requests.auth.HTTPBasicAuth(CLIENT_ID, SECRET_TOKEN)
 

@@ -7,6 +7,11 @@ from config_redis import get_value_by_key, var_env
 
 # Create a function to clean the tweets
 def cleanTweet(tweet):
+    """
+    clean text (remove special character)
+    args :
+        tweet [str] : text
+    """
     temp = re.sub("@[A-Za-z0-9_]+", "", tweet)
     temp = re.sub("#[A-Za-z0-9_]+", "", temp)
     # temp = re.sub("#bitcoin", "bitcoin", temp)  # Remove the '#' from bitcoin
@@ -19,6 +24,10 @@ def cleanTweet(tweet):
     return temp
 
 def get_data_twitter():
+    """
+    get twitter data
+    return [list dict]
+    """
     # Get twitter API credentials from redis database
     keys = get_value_by_key(var_env)
 

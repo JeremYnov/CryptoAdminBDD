@@ -30,12 +30,9 @@ while True:
         sentiment_data = database["sentiment_data"]
         sentiment_data_db = database.get_collection("sentiment_data")
 
-
+        # list send on csv send on hadoop
+        list_text_data_hadoop = []
         for data in text_data_db.find({}, {'_id': 0}):
-            # list send on csv send on hadoop
-            list_text_data_hadoop = []
-
-
             
             # dict insert sentiment in mongo
             dict_sentiment = {}
@@ -73,4 +70,4 @@ while True:
         producer.send("sentiment", data)
     except:
         print("ooops")
-    sleep(20)
+    sleep(3600)
