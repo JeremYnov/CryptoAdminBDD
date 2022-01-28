@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 today = date.today()
 min_date = date(2014, 10, 1)
+load_dotenv()
 
 
 def app():
@@ -98,10 +99,10 @@ def app():
         for data in data_by_symbol:
             data_by_symbol_df = pd.DataFrame(data, index=[0])
             st.write(data_by_symbol_df)
-    
+
     # Sentiment Analysis part
-    st.header("Sentiment Analysis")       
-    # Get sentiment analysis avg 
+    st.header("Sentiment Analysis")
+    # Get sentiment analysis avg
     # Needed by interface to say if the sentiments ar good or bad
     avg_sentiments = sentiment_data_db.aggregate(
         [
@@ -115,11 +116,23 @@ def app():
         ]
     )
     count_sentiment = sentiment_data_db.find({"symbol": "ETH"}).count()
+    
+    # Get polarity and subjectivity avg for ETH
+    st.write(
+        """Polarity is float which lies in the range of [-1,1]
+         where 1 means positive statement and -1 means a negative statement.
+         Subjective sentences generally refer to personal opinion,
+         emotion or judgment whereas objective refers to factual information.
+         Subjectivity is also a float which lies in the range of [0,1]."""
+    )
+    st.write("Number of data in the database  : " + str(count_sentiment))
     # Get only sentiment avg for the page symbol
-    st.write('Polarity is float which lies in the range of [-1,1] where 1 means positive statement and -1 means a negative statement. Subjective sentences generally refer to personal opinion, emotion or judgment whereas objective refers to factual information. Subjectivity is also a float which lies in the range of [0,1].')
-    st.write("nb d'analyse " + str(count_sentiment))
     for avg_sentiment_by_symbol in avg_sentiments:
         if avg_sentiment_by_symbol["_id"] == "ETH":
             col1, col2 = st.columns(2)
-            col1.metric("","Polarity", round(avg_sentiment_by_symbol['avgPolarity'],2))
-            col2.metric("","Subjectivity", round(avg_sentiment_by_symbol['avgSubjectivity'], 2))
+            col1.metric(
+                "", "Polarity", round(avg_sentiment_by_symbol["avgPolarity"], 2)
+            )
+            col2.metric(
+                "", "Subjectivity", round(avg_sentiment_by_symbol["avgSubjectivity"], 2)
+            )
