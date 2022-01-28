@@ -12,7 +12,7 @@
     - producer/ccxt_producer : recupere les datas des crypto BTC, ETH et SOL en temps réel grâce à la librairie ccxt
     - consumer/ccxt_consumer : normalise les données et les insere en base de données
 
-- scripts : contient les 3 protocole : 1er deploiement, reinitialisation, redémarrage
+- scripts : contient les 3 protocole : [1er deploiement](https://github.com/JeremYnov/CryptoAdminBDD/blob/main/scritps/first_deployment.md), [reinitialisation](https://github.com/JeremYnov/CryptoAdminBDD/blob/main/scritps/reset.md), [redémarrage](https://github.com/JeremYnov/CryptoAdminBDD/blob/main/scritps/restart.md)
     - sender_token.py : permet d'envoyer les différents token pour recuperer les datas en base (1er deploiement et reinitialisation)
     - requirements.txt : contient les dependances à installer (pip install -r requirements.txt) qu'il faudra installer dans son venv
 
