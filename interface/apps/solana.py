@@ -113,10 +113,13 @@ def app():
             }
         ]
     )
+    count_sentiment = sentiment_data_db.find({"symbol": "SOL"}).count()
     # Get only sentiment avg for the page symbol
     st.write('Polarity is float which lies in the range of [-1,1] where 1 means positive statement and -1 means a negative statement. Subjective sentences generally refer to personal opinion, emotion or judgment whereas objective refers to factual information. Subjectivity is also a float which lies in the range of [0,1].')
+    st.write("nb d'analyse " + str(count_sentiment))
     for avg_sentiment_by_symbol in avg_sentiments:
         if avg_sentiment_by_symbol["_id"] == "SOL":
             col1, col2 = st.columns(2)
             col1.metric("","Polarity", round(avg_sentiment_by_symbol['avgPolarity'],2))
             col2.metric("","Subjectivity", round(avg_sentiment_by_symbol['avgSubjectivity'], 2))
+            

@@ -114,8 +114,10 @@ def app():
             }
         ]
     )
+    count_sentiment = sentiment_data_db.find({"symbol": "ETH"}).count()
     # Get only sentiment avg for the page symbol
     st.write('Polarity is float which lies in the range of [-1,1] where 1 means positive statement and -1 means a negative statement. Subjective sentences generally refer to personal opinion, emotion or judgment whereas objective refers to factual information. Subjectivity is also a float which lies in the range of [0,1].')
+    st.write("nb d'analyse " + str(count_sentiment))
     for avg_sentiment_by_symbol in avg_sentiments:
         if avg_sentiment_by_symbol["_id"] == "ETH":
             col1, col2 = st.columns(2)
