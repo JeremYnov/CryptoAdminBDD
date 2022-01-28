@@ -1,5 +1,4 @@
 import os
-import requests
 from dotenv import load_dotenv
 from json import dumps
 from kafka import KafkaProducer

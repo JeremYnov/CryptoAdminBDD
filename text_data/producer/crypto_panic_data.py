@@ -3,8 +3,6 @@ import requests
 from dotenv import load_dotenv
 from config_redis import get_value_by_key, var_crypto_panic
 
-
-
 def get_data_crypto_panic():
     """
     get cryptopanic data
@@ -20,5 +18,3 @@ def get_data_crypto_panic():
     return news
 
 get_data_crypto_panic()
-
-
