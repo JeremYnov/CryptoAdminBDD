@@ -6,6 +6,10 @@ import time
 from config_redis import get_value_by_key, var_reddit
 
 def get_data_reddit():
+    """
+    get reddit data
+    return [list dict]
+    """
     keys = get_value_by_key(var_reddit)
     CLIENT_ID = keys["REDDIT_CLIENT_ID"]
     SECRET_TOKEN = keys["REDDIT_SECRET_TOKEN"]

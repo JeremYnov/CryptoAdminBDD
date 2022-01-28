@@ -6,14 +6,27 @@ import glob
 
 # Create a function to get the subjectivity
 def getSubjectivity(tweet):
+    """ 
+    get subjectivity by text
+    args :
+        tweet [str] : text
+    """
     return TextBlob(tweet).sentiment.subjectivity
 
 # Create a function to get the polarity
 def getPolarity(tweet):
+    """ 
+    get polarity by text
+    args :
+        tweet [str] : text
+    """
     return TextBlob(tweet).sentiment.polarity
 
 def write_csv_text_data(list_text_data_hadoop):
-    """write csv for hadoop"""
+    """write csv for hadoop
+    args : 
+        list_text_data_hadoop [list dict] : list text_data
+    """
     # create folder csv if nos exists
     final_directory = os.path.join(os.getcwd(), 'csv')
     if not os.path.exists(final_directory):

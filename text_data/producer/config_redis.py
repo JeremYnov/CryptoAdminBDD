@@ -6,13 +6,21 @@ client = redis.Redis(host="172.17.0.1", port=6379)
 
 
 def create_key_value(key, value):
-    # set a key
+    """insert in base redis
+    args :
+        key [str] : key associated value
+        value [str] : value of credential
+    """
+
     client.set(key, base64.b64encode(value.encode()))
 
 
 def get_value_by_key(keys):
-    #   keys est une liste de clé
-    #   return un dictionnaire clé et valeur
+    """  get value by key in base redis
+    args :
+        keys [list] : list of different key
+    return [dict] : dict of credential
+    """
     dico = {}
     for key in keys:
         value = client.get(key)
