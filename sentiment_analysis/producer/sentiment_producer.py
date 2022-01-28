@@ -70,4 +70,4 @@ while True:
         producer.send("sentiment", data)
     except:
         print("ooops")
-    sleep(20)
+    sleep(60)

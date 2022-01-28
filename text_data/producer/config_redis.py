@@ -1,7 +1,6 @@
 import base64
 import redis
 
-
 # connect to redis
 client = redis.Redis(host="172.17.0.1", port=6379)
 
@@ -27,3 +26,9 @@ var_env = [
     "TWITTER_ACCESS_TOKEN",
     "TWITTER_ACCESS_TOKEN_SECRET",
 ]
+
+var_crypto_panic = ["CRYPTO_PANIC_API_KEY"]
+
+var_reddit = ["REDDIT_CLIENT_ID", "REDDIT_SECRET_TOKEN"]
+
+
